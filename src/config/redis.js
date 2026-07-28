@@ -1,19 +1,13 @@
-const { createClient } = require("redis");
+const { Redis } = require("@upstash/redis");
 
-const redisClient = createClient({
-    url: process.env.REDIS_URL || "redis://127.0.0.1:6379"
+const redisClient = new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN
 });
 
-redisClient.on("error", (error) => {
-    console.error("Redis Error:", error.message);
-});
-
-const connectRedis = async () => {
-    if (!redisClient.isOpen) {
-        await redisClient.connect();
-        console.log("Redis Connected");
-    }
-};
+// The HTTP client holds no persistent connection, so there's nothing to
+// connect. Kept as a no-op so existing boot code that awaits it still works.
+const connectRedis = async () => {};
 
 module.exports = {
     redisClient,
