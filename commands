@@ -1,0 +1,31 @@
+1. Health check — GET /health
+
+curl -i "https://auth-service-red.vercel.app/health"
+2. Signup — POST /api/auth/signup
+
+curl -i -X POST "https://auth-service-red.vercel.app/api/auth/signup" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"secret123"}'
+3. Login — POST /api/auth/login (returns a token)
+
+curl -i -X POST "https://auth-service-red.vercel.app/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"secret123"}'
+Capture the token automatically for the protected routes below (needs jq):
+
+TOKEN=$(curl -s -X POST "https://auth-service-red.vercel.app/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"secret123"}' | jq -r '.token')
+echo "$TOKEN"
+4. Get current user — GET /api/auth/me (protected)
+
+curl -i "https://auth-service-red.vercel.app/api/auth/me" \
+  -H "Authorization: Bearer $TOKEN"
+5. Verify token — GET /api/auth/verify (protected)
+
+curl -i "https://auth-service-red.vercel.app/api/auth/verify" \
+  -H "Authorization: Bearer $TOKEN"
+6. Logout — POST /api/auth/logout (protected)
+
+curl -i -X POST "https://auth-service-red.vercel.app/api/auth/logout" \
+  -H "Authorization: Bearer $TOKEN"
